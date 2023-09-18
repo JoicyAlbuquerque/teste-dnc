@@ -1,21 +1,24 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Schema, model, Document } from 'mongoose';
 
-interface IAtividade {
-  id: string;
-  tipo: string;
-  peso: number;
+/**
+ * Interface que representa a estrutura de um documento de atividade no banco de dados MongoDB.
+ */
+interface IAtividade extends Document {
+  tipo: string; // Tipo da atividade (por exemplo, 'Tarefa', 'Desafio', 'Projeto')
+  peso: number; // Peso atribuído à atividade (utilizado para calcular a pontuação ponderada)
 }
 
-class Atividade implements IAtividade {
-    id: string;
-    tipo: string;
-    peso: number;
+/**
+ * Esquema de Mongoose que define a estrutura de um documento de atividade no banco de dados MongoDB.
+ */
+const AtividadeSchema = new Schema<IAtividade>({
+  tipo: { type: String, required: true }, // Campo que armazena o tipo de atividade
+  peso: { type: Number, required: true, min: 0, max: 100 }, // Campo que armazena o peso da atividade
+});
 
-  constructor(nome: string, tipo: string, peso: number, descricao: string) {
-    this.id = uuidv4();
-    this.tipo = tipo;
-    this.peso = peso;
-  }
-}
+/**
+ * Modelo de Mongoose que fornece métodos para interagir com a coleção de atividades no banco de dados MongoDB.
+ */
+const Atividade = model<IAtividade>('Atividade', AtividadeSchema);
 
 export { IAtividade, Atividade };

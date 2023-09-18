@@ -1,19 +1,22 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Schema, model, Document } from 'mongoose';
 
-interface IEscola {
-  id: string;
-  nome: string;
+/**
+ * Interface que representa a estrutura de um documento de escola no banco de dados MongoDB.
+ */
+interface IEscola extends Document {
+  nome: string; // Nome da escola
 }
 
-class Escola implements IEscola {
-  id: string;
-  nome: string;
+/**
+ * Esquema de Mongoose que define a estrutura de um documento de escola no banco de dados MongoDB.
+ */
+const EscolaSchema = new Schema<IEscola>({
+  nome: { type: String, required: true, unique: true }, // Campo que armazena o nome da escola
+});
 
-  constructor(nome: string) {
-    this.id = uuidv4();
-    this.nome = nome;
-  }
-}
+/**
+ * Modelo de Mongoose que fornece métodos para interagir com a coleção de escolas no banco de dados MongoDB.
+ */
+const Escola = model<IEscola>('Escola', EscolaSchema);
 
 export { IEscola, Escola };
-

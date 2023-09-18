@@ -1,28 +1,30 @@
-import { v4 as uuidv4 } from 'uuid';
+import { Schema, model, Document } from 'mongoose';
 
-interface IAluno {
-  id: string;
-  nome: string;
-  email: string;
-  idEscola: string;
-  pontuacaoTotal: number;
+/**
+ * Interface que representa a estrutura de um documento de aluno no banco de dados MongoDB.
+ */
+interface IAluno extends Document {
+  email: string; // Endereço de e-mail do aluno
+  idEscola: string; // ID da escola à qual o aluno pertence
+  pontuacaoTotal: number; // Pontuação total acumulada pelo aluno
+  posicaoRankingEscola: number; // Posição do aluno no ranking da sua escola
+  posicaoRankingGeral: number; // Posição do aluno no ranking geral
 }
 
-class Aluno implements IAluno {
-  id: string;
-  nome: string;
-  email: string;
-  idEscola: string;
-  pontuacaoTotal: number;
+/**
+ * Esquema de Mongoose que define a estrutura de um documento de aluno no banco de dados MongoDB.
+ */
+const AlunoSchema = new Schema<IAluno>({
+  email: { type: String, required: true, unique: true }, // Campo que armazena o e-mail do aluno
+  idEscola: { type: String, ref: 'Escola', required: true }, // Campo que armazena o ID da escola
+  pontuacaoTotal: { type: Number, default: 0, min: 0 }, // Campo que armazena a pontuação total do aluno
+  posicaoRankingEscola: { type: Number, default: 0, min: 0 }, // Campo que armazena a posição do aluno no ranking da escola
+  posicaoRankingGeral: { type: Number, default: 0, min: 0 }, // Campo que armazena a posição do aluno no ranking geral
+});
 
-  constructor(nome: string, email: string, idEscola: string, pontuacaoTotal: number = 0) {
-    this.id = uuidv4();
-    this.nome = nome;
-    this.email = email;
-    this.idEscola = idEscola;
-    this.pontuacaoTotal = pontuacaoTotal;
-  }
-}
-
+/**
+ * Modelo de Mongoose que fornece métodos para interagir com a coleção de alunos no banco de dados MongoDB.
+ */
+const Aluno = model<IAluno>('Aluno', AlunoSchema);
 
 export { IAluno, Aluno };
